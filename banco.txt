@@ -39,10 +39,6 @@ CREATE TABLE animais (
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
         
-
-    CONSTRAINT fk_animais_vacina
-        FOREIGN KEY (vacina_id) REFERENCES vacinas(id)
-        ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT fk_animais_especie
         FOREIGN KEY (especie_id) REFERENCES especie(id)
         ON UPDATE NO ACTION ON DELETE NO ACTION
