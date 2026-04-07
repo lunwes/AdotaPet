@@ -23,6 +23,34 @@ body {
     background-color: #FFE4E4;
 }
 
+.offcanvas {
+    background-color: #fff;
+}
+
+.offcanvas-header {
+    background-color: #FFE4E4;
+}
+
+.offcanvas-title {
+    color: #ff9cbb;
+    font-weight: bold;
+}
+
+.offcanvas-body a {
+    color: #333;
+    font-weight: 500;
+}
+
+.offcanvas-body a:hover {
+    color: #ff9cbb;
+}
+
+.menu-icon i {
+    font-size: 32px;
+    color: #ff9cbb;
+    cursor: pointer; /* IMPORTANTE */
+}
+
 .topbar-accent {
     width: 100%;
     height: 20px;
