@@ -12,6 +12,7 @@
 <body> 
     <header class="topbar">
 
+<<<<<<< HEAD
     <div class="offcanvas offcanvas-end" tabindex="-1" id="menuLateral">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title">Menu</h5>
@@ -82,6 +83,56 @@
             @endguest
         </div>
     </div>
+=======
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menuLateral">
+
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <!-- PERFIL -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-person-circle fs-2 me-2"></i>
+            <div>
+                <strong>{{ Auth::user()->name ?? 'Usuário' }}</strong><br>
+                <a href="/perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- LINKS -->
+        <ul class="list-unstyled">
+
+            <li class="mb-3">
+                <a href="/anuncios" class="text-decoration-none">
+                    <i class="bi bi-megaphone me-2"></i>
+                    Seus anúncios
+                </a>
+            </li>
+
+            <li class="mb-3">
+                <a href="/salvos" class="text-decoration-none">
+                    <i class="bi bi-bookmark me-2"></i>
+                    Anúncios salvos
+                </a>
+            </li>
+
+            <li class="mb-3">
+                <a href="/conversas" class="text-decoration-none">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    Conversas
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+</div>
+>>>>>>> 66f3e70f1b1a602a980964625d01b8f10e13612e
     
     <div class="topbar-accent"></div>
 
@@ -91,8 +142,13 @@
         </div>
 
         <div class="menu-icon">
+<<<<<<< HEAD
             <i class="bi bi-list" data-bs-toggle="offcanvas" data-bs-target="#menuLateral"></i>
         </div>
+=======
+    <i class="bi bi-list" data-bs-toggle="offcanvas" data-bs-target="#menuLateral"></i>
+</div>
+>>>>>>> 66f3e70f1b1a602a980964625d01b8f10e13612e
     </div>
     </header>
 

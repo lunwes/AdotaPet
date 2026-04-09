@@ -25,6 +25,13 @@ body {
     background-color: #fff;
 }
 
+<<<<<<< HEAD
+=======
+.offcanvas-header {
+    background-color: #FFE4E4;
+}
+
+>>>>>>> 66f3e70f1b1a602a980964625d01b8f10e13612e
 .offcanvas-title {
     color: #ff9cbb;
     font-weight: bold;
@@ -42,7 +49,11 @@ body {
 .menu-icon i {
     font-size: 32px;
     color: #ff9cbb;
+<<<<<<< HEAD
     cursor: pointer;
+=======
+    cursor: pointer; /* IMPORTANTE */
+>>>>>>> 66f3e70f1b1a602a980964625d01b8f10e13612e
 }
 
 .topbar-accent {
