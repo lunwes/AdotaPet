@@ -13,6 +13,7 @@ class Animal extends Model
 
     protected $fillable = [
         'nome',
+        'sexo',
         'sobre',
         'data_nascimento',
         'castracao',
@@ -27,5 +28,10 @@ class Animal extends Model
     public function fotos()
     {
         return $this->hasMany(AnimalFoto::class, 'animal_id');
+    }
+    public function vacinas()
+    {
+        return $this->belongsToMany(Vacina::class, 'animal_vacinas', 'animal_id', 'vacina_id')
+            ->withTimestamps();
     }
 }

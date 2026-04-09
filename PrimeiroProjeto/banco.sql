@@ -1,109 +1,168 @@
-use projeto_ecommerce;
+CREATE DATABASE adotapet
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE users;
-
+use adotapet;
+select * from animais;
 -- ==============================
--- TABELA: users
+-- TABELA: espécies
 -- ==============================
-CREATE TABLE users (
+CREATE TABLE especie (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('ADM', 'CLI') NOT NULL DEFAULT 'CLI',
+    nome VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL
 );
 
-
 -- ==============================
--- TABELA: categorias
+-- TABELA: vacinas
 -- ==============================
-CREATE TABLE categorias (
+CREATE TABLE vacinas (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    descricao TEXT NULL,
+    descricao VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NULL,
-    updated_at TIMESTAMP NULL
+    updated_at TIMESTAMP NULL,
+    especie_id INT not NULL,
+    
+    CONSTRAINT fk_vacinas_especie
+        FOREIGN KEY (especie_id) REFERENCES especie(id)
+        ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-
-
 -- ==============================
--- TABELA: produtos
+-- TABELA: animais
 -- ==============================
-CREATE TABLE produtos (
+CREATE TABLE animais (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    descricao TEXT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INT NOT NULL,
-    categoria_id BIGINT UNSIGNED NOT NULL,
-
+    sexo ENUM('macho', 'femea') NOT NULL,
+    sobre TEXT NULL,
+    data_nascimento DATE,
+    castracao bool NOT NULL,
+    especie_id bigint unsigned not null,
+    adotado bool not null,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
 
-    CONSTRAINT fk_produtos_categoria
-        FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+	CONSTRAINT fk_animais_especie
+        FOREIGN KEY (especie_id) REFERENCES especie(id)
         ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+-- ==============================
+-- TABELA: animal_vacinas
+-- ==============================
 
--- ==============================
--- TABELA: pedidos
--- ==============================
-CREATE TABLE pedidos (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT UNSIGNED NOT NULL,
-    status ENUM('ABERTO', 'PAGO', 'ENVIADO', 'CONCLUIDO', 'CANCELADO') NOT NULL,
-    total DECIMAL(10,2) NOT NULL DEFAULT 0,
+CREATE TABLE animal_vacinas (
+    animal_id BIGINT UNSIGNED NOT NULL,
+    vacina_id BIGINT UNSIGNED NOT NULL,
 
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
 
-    CONSTRAINT fk_pedidos_users
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON UPDATE NO ACTION ON DELETE NO ACTION
+    PRIMARY KEY (animal_id, vacina_id),
+
+    CONSTRAINT fk_animal_vacinas_animal
+        FOREIGN KEY (animal_id) REFERENCES animais(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_animal_vacinas_vacina
+        FOREIGN KEY (vacina_id) REFERENCES vacinas(id)
+        ON DELETE CASCADE
 );
 
+-- ==============================
+-- TABELA: animal_fotos
+-- ==============================
 
--- ==============================
--- TABELA: itens_pedido
--- ==============================
-CREATE TABLE itens_pedido (
+CREATE TABLE animal_fotos (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    pedido_id BIGINT UNSIGNED NOT NULL,
-    produto_id BIGINT UNSIGNED NOT NULL,
-    quantidade INT NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
+
+    animal_id BIGINT UNSIGNED NOT NULL,
+    caminho VARCHAR(500) NOT NULL,
 
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
 
-    CONSTRAINT fk_itens_pedido_pedido
-        FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+    CONSTRAINT fk_fotos_animal
+        FOREIGN KEY (animal_id) REFERENCES animais(id)
+        ON DELETE CASCADE
+);
+
+-- ==============================
+-- TABELA: adocoes
+-- ==============================
+CREATE TABLE adocoes (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    
+    adotante_id BIGINT UNSIGNED NOT NULL,
+    doador_id BIGINT UNSIGNED NOT NULL,
+    
+    animal_id BIGINT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    
+    status ENUM('pendente','aprovada','recusada','cancelada'),
+	data_adocao DATETIME,
+
+    CONSTRAINT fk_adocoes_adotante
+        FOREIGN KEY (adotante_id) REFERENCES users(id)
         ON UPDATE NO ACTION ON DELETE NO ACTION,
 
-    CONSTRAINT fk_itens_pedido_produto
-        FOREIGN KEY (produto_id) REFERENCES produtos(id)
+    CONSTRAINT fk_adocoes_doador
+        FOREIGN KEY (doador_id) REFERENCES users(id)
+        ON UPDATE NO ACTION ON DELETE NO ACTION,
+
+    CONSTRAINT fk_adocoes_animal
+        FOREIGN KEY (animal_id) REFERENCES animais(id)
         ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+-- ==============================
+-- TABELA: conversas
+-- ==============================
 
--- ==============================
--- TABELA: enderecos
--- ==============================
-CREATE TABLE enderecos (
+CREATE TABLE conversas (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT UNSIGNED NOT NULL,
-    endereco VARCHAR(255) NOT NULL,
-    cidade VARCHAR(255) NOT NULL,
-    estado VARCHAR(255) NOT NULL,
-    cep VARCHAR(20) NOT NULL,
+
+    animal_id BIGINT UNSIGNED NOT NULL,
+    adotante_id BIGINT UNSIGNED NOT NULL,
+    doador_id BIGINT UNSIGNED NOT NULL,
 
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
 
-    CONSTRAINT fk_enderecos_usuario
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_conversas_animal
+        FOREIGN KEY (animal_id) REFERENCES animais(id),
+
+    CONSTRAINT fk_conversas_adotante
+        FOREIGN KEY (adotante_id) REFERENCES users(id),
+
+    CONSTRAINT fk_conversas_doador
+        FOREIGN KEY (doador_id) REFERENCES users(id)
+);
+
+-- ==============================
+-- TABELA: mensagens
+-- ==============================
+
+CREATE TABLE mensagens (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    conversa_id BIGINT UNSIGNED NOT NULL,
+    remetente_id BIGINT UNSIGNED NOT NULL,
+
+    mensagem TEXT NOT NULL,
+    lida BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_mensagem_conversa
+        FOREIGN KEY (conversa_id) REFERENCES conversas(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_mensagem_user
+        FOREIGN KEY (remetente_id) REFERENCES users(id)
 );
