@@ -25,6 +25,10 @@ body {
     background-color: #fff;
 }
 
+.offcanvas-header {
+    background-color: #FFE4E4;
+}
+
 .offcanvas-title {
     color: #ff9cbb;
     font-weight: bold;
@@ -42,7 +46,7 @@ body {
 .menu-icon i {
     font-size: 32px;
     color: #ff9cbb;
-    cursor: pointer;
+    cursor: pointer; /* IMPORTANTE */
 }
 
 .topbar-accent {
