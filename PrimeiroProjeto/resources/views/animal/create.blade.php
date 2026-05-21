@@ -19,9 +19,11 @@
             <textarea name="sobre" rows="4" placeholder="Sobre o animal..."></textarea>
 
             <div class="linha">
-                <div class="campo">
-                    <label>Data:</label>
-                    <input type="date" name="data_nascimento">
+                <div class="campo idade-campo">
+                    <label>Idade (meses):</label>
+                    <input type="number" name="idade" id="idade" class="idade-number-input" value="0" min="0"
+                        max="360" step="1">
+                    <div id="idadeTexto" class="idade-texto"></div>
                 </div>
 
                 <div class="campo sexo-campo">

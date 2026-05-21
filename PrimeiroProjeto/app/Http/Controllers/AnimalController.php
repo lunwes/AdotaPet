@@ -18,7 +18,7 @@ class AnimalController extends Controller
 
     public function index()
     {
-        $animais = Animal::with('fotos')->get();
+        $animais = Animal::with('fotos', 'usuario')->get();
         $especies = Especie::all();
         $vacinas = Vacina::all();
 
@@ -38,6 +38,7 @@ class AnimalController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'nome' => 'required|max:100',
             'sexo' => 'required',
@@ -53,10 +54,11 @@ class AnimalController extends Controller
             $animal = Animal::create([
                 'nome' => $request->nome,
                 'sexo' => $request->sexo,
+                'idade' => $request->idade ?? 0,  
                 'sobre' => $request->sobre,
-                'data_nascimento' => $request->data_nascimento,
                 'castracao' => $request->castracao ?? 0,
                 'especie_id' => $request->especie_id,
+                'user_id' => auth()->id(),
                 'adotado' => 0
             ]);
 
@@ -114,6 +116,7 @@ class AnimalController extends Controller
      */
     public function update(Request $request, $id)
     {
+        \Log::info('UPDATE - Dados recebidos:', $request->all());
         $request->validate([
             'nome' => 'required|max:100',
             'sexo' => 'required',
@@ -130,8 +133,8 @@ class AnimalController extends Controller
             $animal->update([
                 'nome' => $request->nome,
                 'sexo' => $request->sexo,
+                'idade' => $request->idade ?? 0,
                 'sobre' => $request->sobre,
-                'data_nascimento' => $request->data_nascimento,
                 'castracao' => $request->castracao ?? 0,
                 'especie_id' => $request->especie_id,
             ]);
@@ -186,15 +189,21 @@ class AnimalController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-    {
-        try {
-            $animal = Animal::findOrFail($id);
+{
+    try {
+        $animal = Animal::findOrFail($id);
+        
+        // Verificar permissão
+        if (auth()->user()->isAdmin() || auth()->id() === $animal->user_id) {
             $animal->delete();
-        } catch (Exception $e) {
-            Log::error('Erro ao excluir animal: ' . $e->getMessage(), [
-                'stack' => $e->getTraceAsString()
-            ]);
+            return redirect()->route('animais.index')->with('success', 'Animal excluído com sucesso!');
         }
-        return redirect()->route('animals.index');
+        
+        return redirect()->route('animais.index')->with('error', 'Sem permissão para excluir.');
+        
+    } catch (Exception $e) {
+        Log::error('Erro ao excluir animal: ' . $e->getMessage());
+        return back()->with('error', 'Erro ao excluir animal.');
     }
+}
 }

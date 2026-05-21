@@ -55,16 +55,7 @@
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="telefone" class="form-label">Telefone</label>
-                <input type="tel" class="form-control @error('telefone') is-invalid @enderror" 
-                       id="telefone" name="telefone" placeholder="(00) 00000-0000" 
-                       value="{{ old('telefone') }}" required>
-                <small class="text-muted">Formato: (99) 99999-9999</small>
-                @error('telefone')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            
 
             <div class="mb-3">
                 <label for="password" class="form-label">Senha</label>

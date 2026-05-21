@@ -13,7 +13,6 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'telefone',
         'password',
         'role',
     ];
@@ -37,5 +36,31 @@ class User extends Authenticatable
     public function isCliente()
     {
         return $this->role === 'CLI';
+    }
+
+    // Relacionamento com animais
+    public function animais()
+    {
+        return $this->hasMany(Animal::class, 'user_id');
+    }
+
+    // Adoções que o usuário solicitou (como adotante)
+    public function adocoesSolicitadas()
+    {
+        return $this->hasMany(Adocao::class, 'adotante_id');
+    }
+
+    // Adoções que o usuário recebeu (como doador)
+    public function adocoesRecebidas()
+    {
+        return $this->hasMany(Adocao::class, 'doador_id');
+    }
+
+    // Notificações não lidas (adoções pendentes para o doador)
+    public function notificacoesNaoLidas()
+    {
+        return $this->adocoesRecebidas()
+            ->where('status', 'pendente')
+            ->count();
     }
 }

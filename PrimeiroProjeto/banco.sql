@@ -3,7 +3,6 @@ CREATE DATABASE adotapet
   COLLATE utf8mb4_unicode_ci;
 
 use adotapet;
-select * from animais;
 -- ==============================
 -- TABELA: espécies
 -- ==============================
@@ -23,11 +22,13 @@ CREATE TABLE vacinas (
     descricao VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
-    especie_id INT not NULL,
-    
+
+    especie_id BIGINT UNSIGNED NOT NULL,
+
     CONSTRAINT fk_vacinas_especie
         FOREIGN KEY (especie_id) REFERENCES especie(id)
-        ON UPDATE NO ACTION ON DELETE NO ACTION
+        ON UPDATE NO ACTION 
+        ON DELETE NO ACTION
 );
 -- ==============================
 -- TABELA: animais
@@ -37,7 +38,7 @@ CREATE TABLE animais (
     nome VARCHAR(255) NOT NULL,
     sexo ENUM('macho', 'femea') NOT NULL,
     sobre TEXT NULL,
-    data_nascimento DATE,
+    idade INT,
     castracao bool NOT NULL,
     especie_id bigint unsigned not null,
     adotado bool not null,
@@ -49,6 +50,9 @@ CREATE TABLE animais (
         ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+
+SELECT * FROM users;
+DELETE from animais where id = 1;
 -- ==============================
 -- TABELA: animal_vacinas
 -- ==============================
@@ -117,6 +121,31 @@ CREATE TABLE adocoes (
     CONSTRAINT fk_adocoes_animal
         FOREIGN KEY (animal_id) REFERENCES animais(id)
         ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE favoritos (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    animal_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    -- Evita favoritos duplicados
+    UNIQUE KEY unique_favorito (animal_id, user_id),
+
+    -- Foreign Keys
+    CONSTRAINT fk_favoritos_animal
+        FOREIGN KEY (animal_id)
+        REFERENCES animais(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_favoritos_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 -- ==============================
