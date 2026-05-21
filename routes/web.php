@@ -8,7 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConversaController;
 
 // Rotas públicas (qualquer um pode ver)
-Route::get('/', [AnimalController::class, 'index'])->name('animais.index');
+
 Route::get('/animais/{id}', [AnimalController::class, 'show'])->name('animais.show');
 
 // ========== ROTAS DE AUTENTICAÇÃO ==========

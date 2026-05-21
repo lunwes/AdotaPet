@@ -76,8 +76,11 @@ class AnimalController extends Controller
 
             if ($request->hasFile('fotos')) {
                 foreach ($request->file('fotos') as $foto) {
-                    $caminho = $foto->store('animais', 'public');
-                    $animal->fotos()->create(['caminho' => $caminho]);
+                    $caminho = $foto->store('animais', 's3');
+
+                    $animal->fotos()->create([
+                        'caminho' => $caminho
+                    ]);
                 }
             }
 
@@ -149,7 +152,7 @@ class AnimalController extends Controller
                     $foto = $animal->fotos()->find($fotoId);
                     if ($foto) {
                         // Remover arquivo do storage
-                        \Storage::disk('public')->delete($foto->caminho);
+                        \Storage::disk('s3')->delete($foto->caminho);
                         $foto->delete();
                     }
                 }
@@ -158,8 +161,11 @@ class AnimalController extends Controller
             // Adicionar novas fotos
             if ($request->hasFile('fotos')) {
                 foreach ($request->file('fotos') as $foto) {
-                    $caminho = $foto->store('animais', 'public');
-                    $animal->fotos()->create(['caminho' => $caminho]);
+                    $caminho = $foto->store('animais', 's3');
+
+                    $animal->fotos()->create([
+                        'caminho' => $caminho
+                    ]);
                 }
             }
 
