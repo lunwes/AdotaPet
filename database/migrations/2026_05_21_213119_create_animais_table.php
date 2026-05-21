@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->integer('idade')->nullable();
             $table->boolean('castracao');
             $table->boolean('adotado');
-            $table->foreignId('especie_id')->constrained('especies');
+            $table->foreignId('especie_id')->constrained('especie');
             $table->timestamps();
         });
     }

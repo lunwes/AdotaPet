@@ -4,28 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('mensagens', function (Blueprint $table) {
+        Schema::create('conversas', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('conversa_id')->constrained('conversas')->cascadeOnDelete();
-            $table->foreignId('remetente_id')->constrained('users');
+            $table->foreignId('animal_id')
+                ->constrained('animais')
+                ->restrictOnDelete();
 
-            $table->text('mensagem');
-            $table->boolean('lida')->default(false);
+            $table->foreignId('adotante_id')
+                ->constrained('users')
+                ->restrictOnDelete();
+
+            $table->foreignId('doador_id')
+                ->constrained('users')
+                ->restrictOnDelete();
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('conversas');
