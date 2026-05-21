@@ -49,4 +49,10 @@
             <a href="{{ route('animais.create') }}" class="btn btn-success">Criar meu primeiro anúncio</a>
         </div>
     @endif
+    <div id="modalAnimal" class="modal-overlay" style="display:none;">
+        <div class="modal-animal">
+            <button class="btn-close" onclick="fecharModal()">✖</button>
+            <br>
+            @include('animal.create')
+        </div>
 @endsection
