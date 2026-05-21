@@ -101,7 +101,16 @@ class Animal extends Model
         return $this->favoritos()->where('user_id', $userId)->exists();
     }
     public function favoritos()
-{
-    return $this->hasMany(Favorito::class, 'animal_id');
-}
+    {
+        return $this->hasMany(Favorito::class, 'animal_id');
+    }
+    // Verificar se o usuário tem uma solicitação pendente para este animal
+    
+    public function solicitacaoPendentePor($userId)
+    {
+        return $this->solicitacoesAdocao()
+            ->where('adotante_id', $userId)
+            ->where('status', 'pendente')
+            ->exists();
+    }
 }

@@ -92,7 +92,6 @@ CREATE TABLE animal_fotos (
         FOREIGN KEY (animal_id) REFERENCES animais(id)
         ON DELETE CASCADE
 );
-
 -- ==============================
 -- TABELA: adocoes
 -- ==============================
@@ -108,6 +107,7 @@ CREATE TABLE adocoes (
     updated_at TIMESTAMP NULL,
     
     status ENUM('pendente','aprovada','recusada','cancelada'),
+    mensagem TEXT,
 	data_adocao DATETIME,
 
     CONSTRAINT fk_adocoes_adotante

@@ -1,15 +1,17 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PatasDigitais</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" >
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-@vite('resources/css/app.css')
-@vite('resources/js/app.js')
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PatasDigitais</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
 </head>
-<body> 
+
+<body>
     <header class="topbar">
         <div class="offcanvas offcanvas-end" tabindex="-1" id="menuLateral">
             <div class="offcanvas-header">
@@ -37,9 +39,26 @@
                         </a>
                     </li>
                     <li class="mb-3">
+                        <a href="{{ route('meus-pedidos') }}"
+                            class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-envelope-heart me-2"></i>
+                                Meus Pedidos
+                            </span>
+                            @auth
+                                @php
+                                    $pedidosPendentes = Auth::user()->pedidosPendentesCount();
+                                @endphp
+                                @if($pedidosPendentes > 0)
+                                    <span class="badge bg-danger rounded-pill">{{ $pedidosPendentes }}</span>
+                                @endif
+                            @endauth
+                        </a>
+                    </li>
+                    <li class="mb-3">
                         <a href="/anuncios" class="text-decoration-none">
                             <i class="bi bi-megaphone me-2"></i>
-                            Seus anúncios
+                            Meus anúncios
                         </a>
                     </li>
                     <li class="mb-3">
@@ -61,7 +80,8 @@
                     <hr>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                        <button type="submit"
+                            class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
                             <i class="bi bi-box-arrow-right"></i>
                             Sair
                         </button>
@@ -71,14 +91,15 @@
                 <!-- BOTÃO LOGIN -->
                 @guest
                     <hr>
-                    <a href="{{ route('login') }}" class="btn btn-custom w-100 d-flex align-items-center justify-content-center gap-2">
+                    <a href="{{ route('login') }}"
+                        class="btn btn-custom w-100 d-flex align-items-center justify-content-center gap-2">
                         <i class="bi bi-box-arrow-in-right"></i>
                         Entrar
                     </a>
                 @endguest
             </div>
         </div>
-        
+
         <div class="topbar-accent"></div>
 
         <div class="topbar-content">
@@ -87,24 +108,20 @@
             </div>
 
             <div class="d-flex align-items-center gap-3">
-                @auth
-                    <div class="notification-icon position-relative">
-                        <a href="{{ route('notificacoes') }}" class="text-dark">
-                            <i class="bi bi-bell-fill fs-4"></i>
-                            @php
-                                $notificacoesCount = Auth::user()->notificacoesNaoLidas();
-                            @endphp
-                            @if($notificacoesCount > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ $notificacoesCount }}
-                                </span>
-                            @endif
-                        </a>
-                    </div>
-                @endauth
-                
-                <div class="menu-icon">
-                    <i class="bi bi-list" data-bs-toggle="offcanvas" data-bs-target="#menuLateral"></i>
+
+
+                <div class="menu-icon position-relative">
+                    <i class="bi bi-list fs-1" data-bs-toggle="offcanvas" data-bs-target="#menuLateral"></i>
+                    @auth
+                        @php
+                            $user = Auth::user();
+                            $pedidosPendentes = method_exists($user, 'pedidosPendentesCount') ? $user->pedidosPendentesCount() : 0;
+                        @endphp
+                        @if($pedidosPendentes > 0)
+                            <span
+                                class="badge bg-danger rounded-pill">{{ $pedidosPendentes > 99 ? '99+' : $pedidosPendentes }}</span>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </div>
@@ -116,4 +133,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

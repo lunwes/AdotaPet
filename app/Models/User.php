@@ -63,4 +63,11 @@ class User extends Authenticatable
             ->where('status', 'pendente')
             ->count();
     }
+    // Contar pedidos de adoção pendentes (como doador)
+    public function pedidosPendentesCount()
+    {
+        return Adocao::where('doador_id', $this->id)
+            ->where('status', 'pendente')
+            ->count();
+    }
 }

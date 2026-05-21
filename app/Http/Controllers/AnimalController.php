@@ -18,7 +18,11 @@ class AnimalController extends Controller
 
     public function index()
     {
-        $animais = Animal::with('fotos', 'usuario')->get();
+        $animais = Animal::with('fotos')
+            ->where('adotado', false)  // FILTRO: SÓ NÃO ADOTADOS
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $especies = Especie::all();
         $vacinas = Vacina::all();
 
@@ -54,7 +58,7 @@ class AnimalController extends Controller
             $animal = Animal::create([
                 'nome' => $request->nome,
                 'sexo' => $request->sexo,
-                'idade' => $request->idade ?? 0,  
+                'idade' => $request->idade ?? 0,
                 'sobre' => $request->sobre,
                 'castracao' => $request->castracao ?? 0,
                 'especie_id' => $request->especie_id,
@@ -189,30 +193,31 @@ class AnimalController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
-    try {
-        $animal = Animal::findOrFail($id);
-        
-        // Verificar permissão
-        if (auth()->user()->isAdmin() || auth()->id() === $animal->user_id) {
-            $animal->delete();
-            return redirect()->route('animais.index')->with('success', 'Animal excluído com sucesso!');
+    {
+        try {
+            $animal = Animal::findOrFail($id);
+
+            // Verificar permissão
+            if (auth()->user()->isAdmin() || auth()->id() === $animal->user_id) {
+                $animal->delete();
+                return redirect()->route('animais.index')->with('success', 'Animal excluído com sucesso!');
+            }
+
+            return redirect()->route('animais.index')->with('error', 'Sem permissão para excluir.');
+
+        } catch (Exception $e) {
+            Log::error('Erro ao excluir animal: ' . $e->getMessage());
+            return back()->with('error', 'Erro ao excluir animal.');
         }
-        
-        return redirect()->route('animais.index')->with('error', 'Sem permissão para excluir.');
-        
-    } catch (Exception $e) {
-        Log::error('Erro ao excluir animal: ' . $e->getMessage());
-        return back()->with('error', 'Erro ao excluir animal.');
     }
-}
-public function meusAnuncios()
-{
-    $animais = Animal::with(['fotos', 'usuario'])
-        ->where('user_id', auth()->id())
-        ->orderBy('created_at', 'desc')
-        ->get();
-    
-    return view('animal.meus-anuncios', compact('animais'));
-}
+    public function meusAnuncios()
+    {
+        $animais = Animal::with(['fotos', 'usuario'])
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Mudar para a pasta "postados"
+        return view('postados.meus-anuncios', compact('animais'));
+    }
 }

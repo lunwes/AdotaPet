@@ -116,51 +116,89 @@
 
             <!-- Botões de ação inferiores -->
             @auth
+
+                {{-- Usuário comum (não é o dono do animal) --}}
                 @if(auth()->id() !== $animal->user_id && !$animal->adotado)
+
                     <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+
                         <!-- Botão Favoritar -->
                         <form action="{{ route('favoritar', $animal) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn {{ $animal->foiSalvoPor(auth()->id()) ? 'btn-success' : 'btn-outline-secondary' }}">
+
+                            <button type="submit"
+                                class="btn {{ $animal->foiSalvoPor(auth()->id()) ? 'btn-success' : 'btn-outline-secondary' }}">
+
                                 <i class="bi bi-bookmark{{ $animal->foiSalvoPor(auth()->id()) ? '-fill' : '' }}"></i>
+
                                 {{ $animal->foiSalvoPor(auth()->id()) ? 'Salvo' : 'Salvar' }}
                             </button>
                         </form>
-                        
+
                         <!-- Botão Adotar -->
-                        <form action="{{ route('solicitar-adocao', $animal) }}" method="POST" 
-                              onsubmit="return showAdocaoModal(event, '{{ $animal->nome }}')">
+                        <form action="{{ route('solicitar-adocao', $animal) }}" method="POST"
+                            onsubmit="return showAdocaoModal(event, '{{ $animal->nome }}')">
+
                             @csrf
+
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-heart-fill"></i> Adotar
                             </button>
                         </form>
+
+                        <!-- Botão Conversa -->
+                        @if($animal->solicitacaoPendentePor(auth()->id()))
+                            <a href="{{ route('conversas.show', [
+                                'animal' => $animal->id,
+                                'doador' => $animal->user_id
+                            ]) }}" class="btn btn-info">
+
+                                <i class="bi bi-chat-dots"></i>
+                            </a>
+                        @endif
+
                     </div>
+
                 @endif
-                
+
+
+                {{-- Dono do anúncio --}}
                 @if(auth()->id() === $animal->user_id && !$animal->adotado)
-                    <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                        <form action="{{ route('animais.destroy', $animal->id) }}" method="POST" 
-                              onsubmit="return confirm('Tem certeza que deseja excluir este anúncio?')">
+
+                    <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+
+                        <form action="{{ route('animais.destroy', $animal->id) }}" method="POST"
+                            onsubmit="return confirm('Tem certeza que deseja excluir este anúncio?')">
+
                             @csrf
                             @method('DELETE')
+
                             <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash-fill"></i> Excluir Anúncio
+                                <i class="bi bi-trash-fill"></i> Excluir
                             </button>
                         </form>
+
                     </div>
+
                 @endif
+
             @endauth
-            
+
+
             @guest
+
                 <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+
                     <a href="{{ route('login') }}" class="btn btn-outline-secondary">
                         <i class="bi bi-bookmark"></i> Salvar (faça login)
                     </a>
+
                     <a href="{{ route('login') }}" class="btn btn-primary">
                         <i class="bi bi-heart-fill"></i> Adotar (faça login)
                     </a>
+
                 </div>
+
             @endguest
         </div>
     </div>
@@ -179,7 +217,8 @@
                 <p class="text-muted">O anunciante receberá sua solicitação e poderá entrar em contato.</p>
                 <div class="mb-3">
                     <label for="mensagem" class="form-label">Mensagem para o anunciante (opcional):</label>
-                    <textarea id="mensagem" class="form-control" rows="3" placeholder="Diga um pouco sobre você e por que quer adotar..."></textarea>
+                    <textarea id="mensagem" class="form-control" rows="3"
+                        placeholder="Diga um pouco sobre você e por que quer adotar..."></textarea>
                 </div>
             </div>
             <div class="modal-footer">
