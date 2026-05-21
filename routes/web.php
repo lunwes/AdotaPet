@@ -6,6 +6,8 @@ use App\Http\Controllers\EspecieController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConversaController;
+use Illuminate\Support\Facades\File;
+
 
 // Rotas públicas (qualquer um pode ver)
 
@@ -61,6 +63,17 @@ Route::get('/buscar-vacinas/{especieId}', function ($especieId) {
         ->select('id', 'nome')
         ->get();
     return response()->json($vacinas);
+});
+
+Route::get('/link-storage', function () {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+    
+    if (!File::exists($link)) {
+        File::link($target, $link);
+        return 'Link criado com sucesso!';
+    }
+    return 'Link já existe!';
 });
 
 

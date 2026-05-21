@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Especie extends Model
 {
-    protected $table = 'especie';
-
-    public $incrementing = true;
-
-    protected $fillable = [
-        'nome'
-    ];
+    protected $table = 'especie'; // ou 'especies' dependendo do seu banco
+    
+    protected $fillable = ['nome'];
+    
+    public function animais()
+    {
+        return $this->hasMany(Animal::class);
+    }
 }
