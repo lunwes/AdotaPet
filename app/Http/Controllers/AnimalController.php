@@ -206,4 +206,13 @@ class AnimalController extends Controller
         return back()->with('error', 'Erro ao excluir animal.');
     }
 }
+public function meusAnuncios()
+{
+    $animais = Animal::with(['fotos', 'usuario'])
+        ->where('user_id', auth()->id())
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    return view('animal.meus-anuncios', compact('animais'));
+}
 }

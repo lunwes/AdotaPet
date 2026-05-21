@@ -145,4 +145,13 @@ class AdocaoController extends Controller
             
         return view('solicitacoes-recebidas', compact('solicitacoes'));
     }
+    public function anunciosSalvos()
+{
+    $favoritos = Favorito::where('user_id', auth()->id())
+        ->with(['animal.fotos', 'animal.usuario'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    return view('animal.anuncios-salvos', compact('favoritos'));
+}
 }

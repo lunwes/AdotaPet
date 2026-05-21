@@ -32,6 +32,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/animais/{id}/edit', [AnimalController::class, 'edit'])->name('animais.edit');
     Route::put('/animais/{id}', [AnimalController::class, 'update'])->name('animais.update');
     Route::delete('/animais/{id}', [AnimalController::class, 'destroy'])->name('animais.destroy');
+    Route::post('/animal/{animal}/solicitar-adocao', [AdocaoController::class, 'solicitar'])->name('solicitar-adocao');
+    Route::post('/animal/{animal}/favoritar', [AdocaoController::class, 'favoritar'])->name('favoritar');
+    Route::get('/notificacoes', [AdocaoController::class, 'notificacoes'])->name('notificacoes');
+    Route::post('/adocao/{adocao}/responder', [AdocaoController::class, 'responder'])->name('responder-adocao');
+    Route::get('/minhas-solicitacoes', [AdocaoController::class, 'minhasSolicitacoes'])->name('minhas-solicitacoes');
+    Route::get('/solicitacoes-recebidas', [AdocaoController::class, 'solicitacoesRecebidas'])->name('solicitacoes-recebidas');
+    Route::get('/meus-anuncios', [AnimalController::class, 'meusAnuncios'])->name('meus-anuncios');
+    Route::get('/anuncios-salvos', [AdocaoController::class, 'anunciosSalvos'])->name('anuncios-salvos');
+    Route::get('/conversas', [ConversaController::class, 'index'])->name('conversas');
+    Route::get('/conversas/animal/{animal}/doador/{doador}', [ConversaController::class, 'show'])
+        ->name('conversas.show');
+    Route::post('/conversas/{conversa}', [ConversaController::class, 'send'])->name('conversas.send');
+    Route::get('/conversas/iniciar/adocao/{adocao}', [ConversaController::class, 'iniciarPorAdocao'])
+        ->name('conversas.iniciar');
 });
 
 // ========== ROTA PARA BUSCAR VACINAS POR ESPÉCIE ==========
@@ -44,12 +58,3 @@ Route::get('/buscar-vacinas/{especieId}', function ($especieId) {
 
 use App\Http\Controllers\AdocaoController;
 
-// Rotas de adoção (protegidas)
-Route::middleware(['auth'])->group(function () {
-    Route::post('/animal/{animal}/solicitar-adocao', [AdocaoController::class, 'solicitar'])->name('solicitar-adocao');
-    Route::post('/animal/{animal}/favoritar', [AdocaoController::class, 'favoritar'])->name('favoritar');
-    Route::get('/notificacoes', [AdocaoController::class, 'notificacoes'])->name('notificacoes');
-    Route::post('/adocao/{adocao}/responder', [AdocaoController::class, 'responder'])->name('responder-adocao');
-    Route::get('/minhas-solicitacoes', [AdocaoController::class, 'minhasSolicitacoes'])->name('minhas-solicitacoes');
-    Route::get('/solicitacoes-recebidas', [AdocaoController::class, 'solicitacoesRecebidas'])->name('solicitacoes-recebidas');
-});

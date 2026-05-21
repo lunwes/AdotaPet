@@ -23,8 +23,6 @@
                         <i class="bi bi-person-circle fs-2 me-2"></i>
                         <div>
                             <strong>{{ Auth::user()->name }}</strong>
-                            <br>
-                            <a href="/perfil" class="small">Ver perfil</a>
                         </div>
                     </div>
                     <hr>
