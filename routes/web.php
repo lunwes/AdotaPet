@@ -22,7 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ========== ROTAS DO SISTEMA ==========
 Route::resource('especies', EspecieController::class);
-Route::resource('animais', AnimalController::class);
+Route::resource('animais', AnimalController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
 
 // Rotas protegidas (requerem login)
 Route::middleware(['auth'])->group(function () {
