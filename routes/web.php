@@ -9,9 +9,7 @@ use App\Http\Controllers\ConversaController;
 
 // Rotas públicas (qualquer um pode ver)
 
-Route::get('/', function () {
-    return view('animais.index');
-});
+Route::get('/', [AnimalController::class, 'show'])->name('animais.show');
 
 Route::get('/animais/{id}', [AnimalController::class, 'show'])->name('animais.show');
 
