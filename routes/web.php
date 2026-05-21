@@ -9,9 +9,8 @@ use App\Http\Controllers\ConversaController;
 
 // Rotas públicas (qualquer um pode ver)
 
-Route::get('/', [AnimalController::class, 'show'])->name('animais.show');
+Route::get('/', [AnimalController::class, 'index'])->name('animais.index');
 
-Route::get('/animais/{id}', [AnimalController::class, 'show'])->name('animais.show');
 
 // ========== ROTAS DE AUTENTICAÇÃO ==========
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -24,7 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ========== ROTAS DO SISTEMA ==========
 Route::resource('especies', EspecieController::class);
-Route::resource('animais', AnimalController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+Route::resource('animais', AnimalController::class);
 
 // Rotas protegidas (requerem login)
 Route::middleware(['auth'])->group(function () {
