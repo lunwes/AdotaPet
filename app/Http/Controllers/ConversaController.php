@@ -25,7 +25,9 @@ class ConversaController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
         
-        return view('conversas.index', compact('conversas'));
+        $animais = Animal::with('fotos');
+        
+        return view('conversas.index', compact('conversas, animais'));
     }
     
     // Mostrar conversa específica (por animal e doador)
