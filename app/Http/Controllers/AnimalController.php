@@ -52,60 +52,78 @@ class AnimalController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+{
+    \Log::info('=== STORE INICIADO ===');
+    \Log::info('Dados recebidos:', $request->all());
+    \Log::info('Usuário logado: ' . auth()->id());
+    
+    $request->validate([
+        'nome' => 'required|max:100',
+        'sexo' => 'required',
+        'sobre' => 'required',
+        'especie_id' => 'required|exists:especie,id',
+        'fotos' => 'required|array|min:1',
+        'fotos.*' => 'image|mimes:jpg,jpeg,png|max:5120'
+    ]);
 
-        $request->validate([
-            'nome' => 'required|max:100',
-            'sexo' => 'required',
-            'sobre' => 'required',
-            'especie_id' => 'required|exists:especie,id',
-            'fotos' => 'required|array|min:1',
-            'fotos.*' => 'image|mimes:jpg,jpeg,png|max:5120'
+    try {
+        DB::beginTransaction();
+        
+        \Log::info('Criando animal...');
+        
+        $animal = Animal::create([
+            'nome' => $request->nome,
+            'sexo' => $request->sexo,
+            'idade' => $request->idade ?? 0,
+            'sobre' => $request->sobre,
+            'castracao' => $request->castracao ?? 0,
+            'especie_id' => $request->especie_id,
+            'user_id' => auth()->id(),
+            'adotado' => 0
         ]);
-
-        try {
-            DB::beginTransaction();
-
-            $animal = Animal::create([
-                'nome' => $request->nome,
-                'sexo' => $request->sexo,
-                'idade' => $request->idade ?? 0,
-                'sobre' => $request->sobre,
-                'castracao' => $request->castracao ?? 0,
-                'especie_id' => $request->especie_id,
-                'user_id' => auth()->id(),
-                'adotado' => 0
-            ]);
-
-            $vacinas = json_decode($request->vacinas, true);
-            if (!empty($vacinas) && is_array($vacinas)) {
-                foreach ($vacinas as $nomeVacina) {
-                    $vacina = Vacina::firstOrCreate(['nome' => $nomeVacina]);
-                    $animal->vacinas()->syncWithoutDetaching([$vacina->id]);
-                }
+        
+        \Log::info('Animal criado ID: ' . $animal->id);
+        
+        // Processar vacinas
+        $vacinas = json_decode($request->vacinas, true);
+        \Log::info('Vacinas:', $vacinas ?? []);
+        
+        if (!empty($vacinas) && is_array($vacinas)) {
+            foreach ($vacinas as $nomeVacina) {
+                $vacina = Vacina::firstOrCreate(['nome' => $nomeVacina]);
+                $animal->vacinas()->syncWithoutDetaching([$vacina->id]);
+                \Log::info('Vacina adicionada: ' . $nomeVacina);
             }
-
-            if ($request->hasFile('fotos')) {
-                foreach ($request->file('fotos') as $foto) {
-                    // Usando o disco 'r2' (configurado no .env)
-                    $caminho = $foto->store('animais', 'r2');
-                    $animal->fotos()->create(['caminho' => $caminho]);
-                }
-            }
-
-            DB::commit();
-
-            return redirect()->route('animais.index')
-                ->with('success', 'Animal cadastrado com sucesso!');
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error('Erro ao cadastrar animal: ' . $e->getMessage());
-
-            return back()->with('error', 'Erro ao cadastrar animal. Tente novamente.')
-                ->withInput();
         }
+        
+        // Salvar fotos
+        if ($request->hasFile('fotos')) {
+            \Log::info('Processando fotos, quantidade: ' . count($request->file('fotos')));
+            foreach ($request->file('fotos') as $foto) {
+                $caminho = $foto->store('animais', 'public');
+                $animal->fotos()->create(['caminho' => $caminho]);
+                \Log::info('Foto salva: ' . $caminho);
+            }
+        } else {
+            \Log::info('Nenhuma foto recebida');
+        }
+        
+        DB::commit();
+        
+        \Log::info('=== STORE FINALIZADO COM SUCESSO ===');
+        
+        return redirect()->route('animais.index')
+            ->with('success', 'Animal cadastrado com sucesso!');
+        
+    } catch (Exception $e) {
+        DB::rollBack();
+        \Log::error('ERRO NO STORE: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return back()->with('error', 'Erro ao cadastrar animal: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
 
     /**
