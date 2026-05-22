@@ -8,7 +8,7 @@
     @if($favoritos->count() > 0)
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach($favoritos as $favorito)
-            <div class="col"> <!-- alteração -->
+            <div class="col"> <!-- alteração jss -->
                     <div class="card h-100 shadow-sm"> <!-- alteração --> 
                 @php
                     $foto = $animal->fotos->first();
