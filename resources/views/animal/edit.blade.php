@@ -27,7 +27,8 @@
                             <!-- Fotos existentes -->
                             @foreach($animal->fotos as $foto)
     @php
-        $fotoUrl = Storage::disk('r2')->url($foto->caminho);
+        $foto = $animal->fotos->first();
+                        $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
     @endphp
     <img src="{{ $fotoUrl }}" class="preview-foto-item {{ $loop->first ? 'capa' : '' }}">
 @endforeach

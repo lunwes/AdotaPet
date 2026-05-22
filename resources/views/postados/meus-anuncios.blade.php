@@ -14,8 +14,8 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         @php
-    $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
-    $fotoUrl = Storage::disk('r2')->url($foto);
+    $foto = $animal->fotos->first();
+    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
 @endphp
 
 <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}">
@@ -55,6 +55,10 @@
         <div class="modal-animal">
             <button class="btn-close" onclick="fecharModal()">✖</button>
             <br>
-            @include('animal.create')
+            @include('animal.create', [
+    'especies' => $especies,
+    'vacinas' => $vacinas
+])
         </div>
+    </div>
 @endsection

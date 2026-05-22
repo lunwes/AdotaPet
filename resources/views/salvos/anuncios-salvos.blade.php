@@ -9,8 +9,8 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach($favoritos as $favorito)
                 @php
-                    $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
-                    $fotoUrl = Storage::disk('r2')->url($foto);
+                    $foto = $animal->fotos->first();
+                    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
                     $animal = $favorito->animal;
                     $idade = $animal->idade_formatada;
                 @endphp

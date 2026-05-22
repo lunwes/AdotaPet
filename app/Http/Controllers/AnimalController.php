@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vacina;
 use Illuminate\Support\Facades\Storage;
-use App\Models\AnimalFoto;
+use App\Models\AnimalFoto;  
 use Exception;
 
 class AnimalController extends Controller
@@ -21,7 +21,7 @@ class AnimalController extends Controller
     public function index()
     {
         $animais = Animal::with('fotos')
-            ->where('adotado', false)
+            ->where('adotado', false)  // FILTRO: SÓ NÃO ADOTADOS
             ->orderBy('created_at', 'desc')
             ->get();
 
