@@ -10,12 +10,14 @@
                     $outroUser = $conversa->outroUsuario(auth()->id());
                     $ultimaMensagem = $conversa->ultima_mensagem;
                     $naoLidas = $conversa->mensagensNaoLidas(auth()->id());
+                    $foto = $animal->fotos->first();
+                    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
                 @endphp
                 <a href="{{ route('conversas.show', ['animal' => $conversa->animal_id, 'doador' => $outroUser->id]) }}" 
                    class="list-group-item list-group-item-action">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ asset('storage/' . ($conversa->animal->fotos->first()->caminho ?? 'default.jpg')) }}" 
+                            <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}" 
                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
                             <div>
                                 <strong>{{ $conversa->animal->nome }}</strong>
