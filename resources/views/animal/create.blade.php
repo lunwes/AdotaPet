@@ -54,8 +54,8 @@
                     <label>Espécie:</label>
                     <select name="especie_id" id="especieSelect" required>
                         <option value="">Selecione</option>
-                        @foreach($especies as $especie)
-                            <option value="{{ $especie->id }}">{{ $especie->nome }}</option>
+                        @foreach($especie as $e)
+                            <option value="{{ $e->id }}">{{ $e->nome }}</option>
                         @endforeach
                     </select>
                 </div>

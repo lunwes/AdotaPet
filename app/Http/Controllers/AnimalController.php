@@ -31,10 +31,12 @@ class AnimalController extends Controller
 
     public function create()
     {
-        $especies = Especie::all();
-        $vacinas = Vacina::all();
+        $especies = Especie::all(); 
 
-        return view("animal.create", compact('especies', 'vacinas'));
+        return view('animal.create', [
+            'especies' => $especies,
+            'vacinas' => Vacina::all()
+        ]);
     }
 
     /**

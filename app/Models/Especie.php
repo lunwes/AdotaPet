@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Especie extends Model
 {
-    protected $table = 'especie'; // ou 'especies' dependendo do seu banco
+    protected $table = 'especie';  // Confirme que é 'especie' (singular)
     
     protected $fillable = ['nome'];
     
-    public function animais()
-    {
-        return $this->hasMany(Animal::class);
-    }
+    public $timestamps = true;
 }
