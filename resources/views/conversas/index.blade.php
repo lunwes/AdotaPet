@@ -10,8 +10,9 @@
                     $outroUser = $conversa->outroUsuario(auth()->id());
                     $ultimaMensagem = $conversa->ultima_mensagem;
                     $naoLidas = $conversa->mensagensNaoLidas(auth()->id());
-                    
-                    $fotoUrl = ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
+                    $animal = $conversa->animal;
+                    $foto = $animal->fotos->first();
+                    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
                 @endphp
                 <a href="{{ route('conversas.show', ['animal' => $conversa->animal_id, 'doador' => $outroUser->id]) }}" 
                    class="list-group-item list-group-item-action">
