@@ -46,7 +46,6 @@
         <div class="text-center py-5">
             <i class="bi bi-megaphone fs-1 text-muted"></i>
             <p class="mt-3 text-muted">Você ainda não tem nenhum anúncio.</p>
-            <a href="{{ route('animais.create') }}" class="btn btn-success">Criar meu primeiro anúncio</a>
         </div>
     @endif
     
