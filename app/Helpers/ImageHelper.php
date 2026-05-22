@@ -12,12 +12,7 @@ class ImageHelper
             return asset('images/sem-imagem.jpg');
         }
         
-        // Para R2, use temporaryUrl
-        try {
-            return Storage::disk('r2')->temporaryUrl($caminho, now()->addHours(24));
-        } catch (\Exception $e) {
-            // Fallback: retorna o caminho direto (pode não funcionar)
-            return $caminho;
-        }
+        // Gerar URL temporária de 24 horas
+        return Storage::disk('r2')->temporaryUrl($caminho, now()->addHours(24));
     }
 }

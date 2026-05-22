@@ -11,7 +11,7 @@
     $fotoUrl = Storage::disk('r2')->url($foto);
 @endphp
 
-<img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
+<img src="{{ App\Helpers\ImageHelper::url($foto->caminho) }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
                         style="height: 180px; object-fit: cover;">
 
                     <!-- CORPO DO CARD COM AS INFORMAÇÕES -->
