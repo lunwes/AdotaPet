@@ -14,19 +14,17 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         @php
-    $foto = $animal->fotos->first();
-    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
-@endphp
+                            $foto = $animal->fotos->first();
+                            $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
+                        @endphp
 
-<img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}">
-
-                        <img src="{{ asset('storage/' . $foto) }}" class="card-img-top"
-                            alt="Foto de {{ $animal->nome }}" style="height: 180px; object-fit: cover;">
+                        <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
+                        style="height: 180px; object-fit: cover;">
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $animal->nome }}</h5>
                             <p class="card-text mb-1">
-                                <strong>Idade:</strong> {{ $idade }}
+                                <strong>Idade:</strong> {{ $idade }} meses
                             </p>
                             <p class="card-text">
                                 <strong>Status:</strong> 
@@ -51,14 +49,5 @@
             <a href="{{ route('animais.create') }}" class="btn btn-success">Criar meu primeiro anúncio</a>
         </div>
     @endif
-    <div id="modalAnimal" class="modal-overlay" style="display:none;">
-        <div class="modal-animal">
-            <button class="btn-close" onclick="fecharModal()">✖</button>
-            <br>
-            @include('animal.create', [
-    'especies' => $especies,
-    'vacinas' => $vacinas
-])
-        </div>
-    </div>
+    
 @endsection
