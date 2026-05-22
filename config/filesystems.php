@@ -26,9 +26,8 @@ return [
             'region' => env('R2_REGION', 'auto'),
             'bucket' => env('R2_BUCKET'),
             'endpoint' => env('R2_ENDPOINT'),
-            'use_path_style_endpoint' => false,
+            'url' => env('R2_URL'),  // ADICIONE ESTA LINHA
             'visibility' => 'public',
-            'throw' => true,
         ],
     ],
 
