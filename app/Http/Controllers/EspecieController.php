@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Especie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Exception;
 
 class EspecieController extends Controller

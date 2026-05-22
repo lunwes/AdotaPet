@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vacina;
+use Illuminate\Support\Facades\Storage;
+use App\Models\AnimalFoto;  
 use Exception;
 
 class AnimalController extends Controller
@@ -31,11 +33,17 @@ class AnimalController extends Controller
 
     public function create()
     {
-        $especies = Especie::all(); 
+        $especies = Especie::all();
+        $vacinas = Vacina::all();
+
+        // Verifique se tem dados
+        if ($especies->isEmpty()) {
+            \Log::warning('Nenhuma espécie encontrada!');
+        }
 
         return view('animal.create', [
             'especies' => $especies,
-            'vacinas' => Vacina::all()
+            'vacinas' => $vacinas
         ]);
     }
 
@@ -78,11 +86,9 @@ class AnimalController extends Controller
 
             if ($request->hasFile('fotos')) {
                 foreach ($request->file('fotos') as $foto) {
-                    $caminho = $foto->store('animais', 's3');
-
-                    $animal->fotos()->create([
-                        'caminho' => $caminho
-                    ]);
+                    // Usando o disco 'r2' (configurado no .env)
+                    $caminho = $foto->store('animais', 'r2');
+                    $animal->fotos()->create(['caminho' => $caminho]);
                 }
             }
 
@@ -154,20 +160,17 @@ class AnimalController extends Controller
                     $foto = $animal->fotos()->find($fotoId);
                     if ($foto) {
                         // Remover arquivo do storage
-                        \Storage::disk('s3')->delete($foto->caminho);
+                        Storage::disk('r2')->delete($foto->caminho);
                         $foto->delete();
                     }
                 }
             }
 
-            // Adicionar novas fotos
+            // Adicionar novas fotos no R2
             if ($request->hasFile('fotos')) {
                 foreach ($request->file('fotos') as $foto) {
-                    $caminho = $foto->store('animais', 's3');
-
-                    $animal->fotos()->create([
-                        'caminho' => $caminho
-                    ]);
+                    $caminho = $foto->store('animais', 'r2');
+                    $animal->fotos()->create(['caminho' => $caminho]);
                 }
             }
 
@@ -207,9 +210,15 @@ class AnimalController extends Controller
 
             // Verificar permissão
             if (auth()->user()->isAdmin() || auth()->id() === $animal->user_id) {
+                // Remover fotos do R2
+                foreach ($animal->fotos as $foto) {
+                    Storage::disk('r2')->delete($foto->caminho);
+                    $foto->delete();
+                }
                 $animal->delete();
                 return redirect()->route('animais.index')->with('success', 'Animal excluído com sucesso!');
             }
+
 
             return redirect()->route('animais.index')->with('error', 'Sem permissão para excluir.');
 
@@ -227,5 +236,25 @@ class AnimalController extends Controller
 
         // Mudar para a pasta "postados"
         return view('postados.meus-anuncios', compact('animais'));
+    }
+    public function removerFoto($fotoId)
+    {
+        try {
+            $foto = AnimalFoto::findOrFail($fotoId);
+            $animal = $foto->animal;
+
+            // Verificar permissão
+            if (auth()->user()->isAdmin() || auth()->id() === $animal->user_id) {
+                Storage::disk('r2')->delete($foto->caminho);
+                $foto->delete();
+                return response()->json(['success' => true]);
+            }
+
+            return response()->json(['error' => 'Sem permissão'], 403);
+
+        } catch (Exception $e) {
+            Log::error('Erro ao remover foto: ' . $e->getMessage());
+            return response()->json(['error' => 'Erro ao remover foto'], 500);
+        }
     }
 }

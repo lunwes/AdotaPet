@@ -65,15 +65,9 @@ Route::get('/buscar-vacinas/{especieId}', function ($especieId) {
     return response()->json($vacinas);
 });
 
-Route::get('/link-storage', function () {
-    $target = storage_path('app/public');
-    $link = public_path('storage');
-    
-    if (!File::exists($link)) {
-        File::link($target, $link);
-        return 'Link criado com sucesso!';
-    }
-    return 'Link já existe!';
+
+    Route::get('/test-especies', function() {
+    return App\Models\Especie::all();
 });
 
 

@@ -40,22 +40,22 @@
                     <div class="foto-principal">
                         @php
                             $fotoPrincipal = $animal->fotos->first();
+                            $fotoPrincipalUrl = $fotoPrincipal ? Storage::disk('r2')->url($fotoPrincipal->caminho) : '';
                         @endphp
-                        @if($fotoPrincipal)
-                            <img src="{{ asset('storage/' . $fotoPrincipal->caminho) }}" alt="Foto de {{ $animal->nome }}"
-                                id="fotoPrincipal">
-                        @else
-                            <div class="sem-foto">
-                                <span>Sem foto</span>
-                            </div>
+
+                        @if($fotoPrincipalUrl)
+                            <img src="{{ $fotoPrincipalUrl }}" alt="Foto de {{ $animal->nome }}" id="fotoPrincipal">
                         @endif
                     </div>
 
                     @if($animal->fotos->count() > 1)
                         <div class="foto-miniaturas">
                             @foreach($animal->fotos as $foto)
-                                <img src="{{ asset('storage/' . $foto->caminho) }}" alt="Foto de {{ $animal->nome }}"
-                                    class="foto-miniatura" onclick="document.getElementById('fotoPrincipal').src = this.src">
+                                @php
+                                    $fotoUrl = Storage::disk('r2')->url($foto->caminho);
+                                @endphp
+                                <img src="{{ $fotoUrl }}" class="foto-miniatura"
+                                    onclick="document.getElementById('fotoPrincipal').src = this.src">
                             @endforeach
                         </div>
                     @endif

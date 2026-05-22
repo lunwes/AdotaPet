@@ -9,14 +9,17 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach($favoritos as $favorito)
                 @php
-                    $animal = $favorito->animal;
                     $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
+                    $fotoUrl = Storage::disk('r2')->url($foto);
+                    $animal = $favorito->animal;
                     $idade = $animal->idade_formatada;
                 @endphp
+
+                <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}">
                 <div class="col">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ asset('storage/' . $foto) }}" class="card-img-top"
-                            alt="Foto de {{ $animal->nome }}" style="height: 180px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $foto) }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
+                            style="height: 180px; object-fit: cover;">
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $animal->nome }}</h5>
@@ -24,7 +27,7 @@
                                 <strong>Idade:</strong> {{ $idade }}
                             </p>
                             <p class="card-text">
-                                <strong>Status:</strong> 
+                                <strong>Status:</strong>
                                 <span class="badge {{ $animal->adotado ? 'bg-secondary' : 'bg-success' }}">
                                     {{ $animal->adotado ? 'Adotado' : 'Disponível' }}
                                 </span>

@@ -14,9 +14,11 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         @php
-                            $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
-                            $idade = $animal->idade_formatada;
-                        @endphp
+    $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
+    $fotoUrl = Storage::disk('r2')->url($foto);
+@endphp
+
+<img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}">
 
                         <img src="{{ asset('storage/' . $foto) }}" class="card-img-top"
                             alt="Foto de {{ $animal->nome }}" style="height: 180px; object-fit: cover;">

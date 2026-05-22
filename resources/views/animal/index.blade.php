@@ -7,16 +7,11 @@
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     @php
-                        // Pega a primeira foto do animal ou usa placeholder
-                        $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
+    $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
+    $fotoUrl = Storage::disk('r2')->url($foto);
+@endphp
 
-                        // Calcula idade aproximada em anos
-                        $idade = $animal->data_nascimento
-                            ? \Carbon\Carbon::parse($animal->data_nascimento)->age
-                            : 'Desconhecida';
-                    @endphp
-
-                    <img src="{{ asset('storage/' . $foto) }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
+<img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}">
                         style="height: 180px; object-fit: cover;">
 
                     <!-- CORPO DO CARD COM AS INFORMAÇÕES -->

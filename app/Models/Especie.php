@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// app/Models/Especie.php
 class Especie extends Model
 {
-    protected $table = 'especie';  // Confirme que é 'especie' (singular)
-    
+    protected $table = 'especie'; // singular, como está no seu banco
     protected $fillable = ['nome'];
-    
-    public $timestamps = true;
 }

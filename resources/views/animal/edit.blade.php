@@ -26,14 +26,11 @@
                         <div id="previewFotos" class="preview-fotos">
                             <!-- Fotos existentes -->
                             @foreach($animal->fotos as $foto)
-                                <div class="preview-foto-item-wrapper" data-foto-id="{{ $foto->id }}">
-                                    <img src="{{ asset('storage/' . $foto->caminho) }}"
-                                        class="preview-foto-item {{ $loop->first ? 'capa' : '' }}"
-                                        data-foto-id="{{ $foto->id }}">
-                                    <button type="button" class="remove-foto"
-                                        onclick="removerFoto(this, {{ $foto->id }})">✖</button>
-                                </div>
-                            @endforeach
+    @php
+        $fotoUrl = Storage::disk('r2')->url($foto->caminho);
+    @endphp
+    <img src="{{ $fotoUrl }}" class="preview-foto-item {{ $loop->first ? 'capa' : '' }}">
+@endforeach
                         </div>
                         <small class="text-muted">* A primeira foto será a capa</small>
                     </div>
