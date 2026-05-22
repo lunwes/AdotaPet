@@ -19,17 +19,28 @@ class AnimalController extends Controller
      */
 
     public function index()
-    {
-        $animais = Animal::with('fotos')
-            ->where('adotado', false)  // FILTRO: SÓ NÃO ADOTADOS
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $especies = Especie::all();
-        $vacinas = Vacina::all();
-
+{
+    try {
+        // Buscar animais com relacionamentos necessários
+        $animais = Animal::with(['fotos' => function($q) {
+            $q->select('id', 'animal_id', 'caminho');
+        }])->select('id', 'nome', 'idade', 'castracao', 'adotado', 'user_id')
+          ->orderBy('created_at', 'desc')
+          ->get();
+        
+        $especies = Especie::select('id', 'nome')->get();
+        $vacinas = Vacina::select('id', 'nome')->get();
+        
         return view('animal.index', compact('animais', 'especies', 'vacinas'));
+        
+    } catch (\Exception $e) {
+        \Log::error('Erro no index: ' . $e->getMessage());
+        
+        // Retorna uma view de erro amigável
+        return view('errors.500', ['message' => 'Erro ao carregar anúncios. Tente novamente mais tarde.']);
     }
+}
+    
 
     public function create()
     {
