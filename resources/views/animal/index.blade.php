@@ -46,7 +46,7 @@
         <div class="modal-animal">
             <button class="btn-close" onclick="fecharModal()">✖</button>
             <br>
-            @include('animal.create')
+            @include('animal.create', ['especies' => $especies, 'vacinas' => $vacinas])
         </div>
     </div>
 @endsection
