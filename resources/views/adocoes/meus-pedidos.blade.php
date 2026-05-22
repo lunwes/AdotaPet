@@ -121,7 +121,8 @@
                         @php
                             $animal = $pedido->animal;
                             $doador = $pedido->doador;
-                            $foto = $animal->fotos->first()->caminho ?? 'sem-imagem.jpg';
+                            $foto = $animal->fotos->first();
+                            $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
                             
                             $statusClass = [
                                 'pendente' => 'warning',
@@ -140,8 +141,7 @@
                         
                         <div class="col">
                             <div class="card h-100 shadow-sm">
-                                <img src="{{ asset('storage/' . $foto) }}" class="card-img-top"
-                                    alt="Foto de {{ $animal->nome }}" style="height: 180px; object-fit: cover;">
+                                <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}" style="height: 180px; object-fit: cover;">
                                 
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
