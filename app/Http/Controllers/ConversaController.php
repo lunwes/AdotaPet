@@ -27,7 +27,7 @@ class ConversaController extends Controller
         
         $animais = Animal::with('fotos');
         
-        return view('conversas.index', compact('conversas, animais'));
+        return view('conversas.index', compact('conversas', 'animais'));
     }
     
     // Mostrar conversa específica (por animal e doador)
