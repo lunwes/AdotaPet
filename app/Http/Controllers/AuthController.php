@@ -32,7 +32,7 @@ class AuthController extends Controller
             
             // Redirecionar baseado no role
             if ($user->isAdmin()) {
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/animais');
             } else {
                 return redirect()->intended('/');
             }
@@ -63,7 +63,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'CLI', // Padrão: cliente
+                'role' => 'CLI', 
             ]);
 
             Auth::login($user);
