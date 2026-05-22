@@ -1,3 +1,4 @@
+{{ dd($especies ?? 'NAO EXISTE') }}
 <form action="{{ route('animais.store') }}" method="POST" enctype="multipart/form-data" id="formAnimal">
     @csrf
 
