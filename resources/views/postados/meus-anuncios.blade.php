@@ -3,9 +3,9 @@
 @section('conteudo')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Meus Anúncios</h2>
-        <a href="{{ route('animais.create') }}" class="btn btn-success">
+        <button class="btn btn-success" id="btnNovoRegistro">
             <i class="bi bi-plus-lg"></i> Novo Anúncio
-        </a>
+        </button>
     </div>
 
     @if($animais->count() > 0)
@@ -16,15 +16,16 @@
                         @php
                             $foto = $animal->fotos->first();
                             $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
+                            $idade = $animal->idade_formatada;
                         @endphp
 
                         <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}"
-                        style="height: 180px; object-fit: cover;">
+                            style="height: 180px; object-fit: cover;">
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $animal->nome }}</h5>
                             <p class="card-text mb-1">
-                                <strong>Idade:</strong> {{ $idade }} meses
+                                <strong>Idade:</strong> {{ $idade }}
                             </p>
                             <p class="card-text">
                                 <strong>Status:</strong> 
@@ -48,5 +49,13 @@
             <p class="mt-3 text-muted">Você ainda não tem nenhum anúncio.</p>
         </div>
     @endif
-    
+
+    <!-- MODAL (igual ao do index) -->
+    <div id="modalAnimal" class="modal-overlay" style="display:none;">
+        <div class="modal-animal">
+            <button class="btn-close" onclick="fecharModal()">✖</button>
+            <br>
+            @include('animal.create', ['especies' => $especies, 'vacinas' => $vacinas])
+        </div>
+    </div>
 @endsection
