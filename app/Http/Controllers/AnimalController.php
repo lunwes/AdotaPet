@@ -233,9 +233,12 @@ class AnimalController extends Controller
             ->where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get();
-
-        // Mudar para a pasta "postados"
-        return view('postados.meus-anuncios', compact('animais'));
+    
+        // Buscar espécies e vacinas para o modal
+        $especies = Especie::all();
+        $vacinas = Vacina::all();
+    
+    return view('postados.meus-anuncios', compact('animais', 'especies', 'vacinas'));
     }
     public function removerFoto($fotoId)
     {
