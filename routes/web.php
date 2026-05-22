@@ -66,8 +66,4 @@ Route::get('/buscar-vacinas/{especieId}', function ($especieId) {
 });
 
 
-    Route::get('/test-especies', function() {
-    return App\Models\Especie::all();
-});
-
 
