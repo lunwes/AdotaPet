@@ -165,7 +165,7 @@ class AdocaoController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('adocoes.pedidos', compact('pedidos'));
+        return view('adocoes.meus-pedidos', compact('pedidos'));
     }
 
     // Visualizar pedido específico
@@ -178,7 +178,7 @@ class AdocaoController extends Controller
 
         $adocao->load(['animal.fotos', 'adotante']);
 
-        return view('adocoes.ver-pedido', compact('adocao'));
+        return view('adocoes.ver-meu-pedido', compact('adocao'));
     }
 
     // Aceitar pedido de adoção
