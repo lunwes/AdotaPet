@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conversas/{conversa}', [ConversaController::class, 'send'])->name('conversas.send');
     Route::get('/conversas/iniciar/adocao/{adocao}', [ConversaController::class, 'iniciarPorAdocao'])
         ->name('conversas.iniciar');
-    Route::get('/pedidos-adocao', [AdocaoController::class, 'pedidosRecebidos'])->name('pedidos-adocao');
+    
     Route::get('/pedidos-adocao/{adocao}', [AdocaoController::class, 'verPedido'])->name('pedidos-adocao.ver');
     Route::post('/pedidos-adocao/{adocao}/aceitar', [AdocaoController::class, 'aceitarPedido'])->name('pedidos-adocao.aceitar');
     Route::post('/pedidos-adocao/{adocao}/recusar', [AdocaoController::class, 'recusarPedido'])->name('pedidos-adocao.recusar');
