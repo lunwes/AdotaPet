@@ -1,9 +1,14 @@
 @extends('layout')
 
 @section('conteudo')
+@php
+    $animal = $conversa->animal;
+    $foto = $animal->fotos->first();
+    $fotoUrl = $foto ? \App\Helpers\ImageHelper::url($foto->caminho) : asset('images/sem-imagem.jpg');
+@endphp
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-3">
-            <img src="{{ asset('storage/' . ($animal->fotos->first()->caminho ?? 'default.jpg')) }}" 
+            <img src="{{ $fotoUrl }}" class="card-img-top" alt="Foto de {{ $animal->nome }}" 
                  style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
             <div>
                 <h2 class="mb-0">{{ $animal->nome }}</h2>
