@@ -116,50 +116,33 @@
 
             <!-- Botões de ação inferiores -->
             @auth
-
-                {{-- Usuário comum (não é o dono do animal) --}}
                 @if(auth()->id() !== $animal->user_id && !$animal->adotado)
-
                     <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
-
                         <!-- Botão Favoritar -->
                         <form action="{{ route('favoritar', $animal) }}" method="POST">
                             @csrf
-
                             <button type="submit"
                                 class="btn {{ $animal->foiSalvoPor(auth()->id()) ? 'btn-success' : 'btn-outline-secondary' }}">
-
                                 <i class="bi bi-bookmark{{ $animal->foiSalvoPor(auth()->id()) ? '-fill' : '' }}"></i>
-
                                 {{ $animal->foiSalvoPor(auth()->id()) ? 'Salvo' : 'Salvar' }}
                             </button>
                         </form>
 
                         <!-- Botão Adotar -->
-                        <form action="{{ route('solicitar-adocao', $animal) }}" method="POST"
-                            onsubmit="return showAdocaoModal(event, '{{ $animal->nome }}')">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adocaoModal">
+                            <i class="bi bi-heart-fill"></i> Adotar
+                        </button>
 
-                            @csrf
-
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-heart-fill"></i> Adotar
-                            </button>
-                        </form>
-
-                        <!-- Botão Conversa -->
-                        @if($animal->solicitacaoPendentePor(auth()->id()))
-                            <a href="{{ route('conversas.show', [
-                                'animal' => $animal->id,
-                                'doador' => $animal->user_id
-                            ]) }}" class="btn btn-info">
-
-                                <i class="bi bi-chat-dots"></i>
+                        <!-- Botão Conversar (SÓ APARECE SE JÁ EXISTIR CHAT) -->
+                        @if($animal->temConversaCom(auth()->id()))
+                            <a href="{{ route('conversas.show', ['animal' => $animal->id, 'doador' => $animal->user_id]) }}"
+                                class="btn btn-info">
+                                <i class="bi bi-chat-dots"></i> Conversar
                             </a>
                         @endif
-
                     </div>
-
                 @endif
+
 
 
                 {{-- Dono do anúncio --}}

@@ -105,12 +105,34 @@ class Animal extends Model
         return $this->hasMany(Favorito::class, 'animal_id');
     }
     // Verificar se o usuário tem uma solicitação pendente para este animal
-    
+
     public function solicitacaoPendentePor($userId)
     {
         return $this->solicitacoesAdocao()
             ->where('adotante_id', $userId)
             ->where('status', 'pendente')
+            ->exists();
+    }
+
+    public function conversas()
+    {
+        return $this->hasMany(Conversa::class, 'animal_id');
+    }
+
+    // Verifica ESTRITAMENTE se existe conversa deste animal com este usuário
+    public function temConversaCom($userId)
+    {
+        return \App\Models\Conversa::where('animal_id', $this->id)
+            ->where(function ($query) use ($userId) {
+                // O usuário logado é o adotante e o dono do animal é o doador
+                $query->where('adotante_id', $userId)
+                    ->where('doador_id', $this->user_id);
+            })
+            ->orWhere(function ($query) use ($userId) {
+                // O usuário logado é o doador e o dono do animal é o adotante (improvável, mas seguro)
+                $query->where('doador_id', $userId)
+                    ->where('adotante_id', $this->user_id);
+            })
             ->exists();
     }
 }

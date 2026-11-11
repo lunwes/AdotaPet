@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Adocao; 
+use App\Models\Adocao;
 use Exception;
 
 class ConversaController extends Controller
@@ -19,73 +19,83 @@ class ConversaController extends Controller
     {
         $conversas = Conversa::where('adotante_id', auth()->id())
             ->orWhere('doador_id', auth()->id())
-            ->with(['animal', 'adotante', 'doador', 'mensagens' => function($q) {
-                $q->latest()->limit(1);
-            }])
+            ->with([
+                'animal',
+                'adotante',
+                'doador',
+                'mensagens' => function ($q) {
+                    $q->latest()->limit(1);
+                }
+            ])
             ->orderBy('updated_at', 'desc')
             ->get();
-        
+
         $animais = Animal::with('fotos');
-        
+
         return view('conversas.index', compact('conversas', 'animais'));
     }
-    
+
     // Mostrar conversa específica (por animal e doador)
     public function show(Animal $animal, User $doador = null)
     {
         // Se não passou o doador, tenta buscar pela solicitação de adoção
         if (!$doador) {
             $adocao = Adocao::where('animal_id', $animal->id)
-                ->where(function($q) {
+                ->where(function ($q) {
                     $q->where('adotante_id', auth()->id())
-                      ->orWhere('doador_id', auth()->id());
+                        ->orWhere('doador_id', auth()->id());
                 })
                 ->first();
-            
+
             if ($adocao) {
                 $doador = $adocao->doador_id == auth()->id() ? $adocao->adotante : $adocao->doador;
             } else {
                 $doador = $animal->usuario;
             }
         }
-        
+
         // Buscar ou criar conversa
         $conversa = Conversa::where('animal_id', $animal->id)
-            ->where(function($q) use ($doador) {
-                $q->where('adotante_id', auth()->id())
-                  ->where('doador_id', $doador->id);
+            ->where(function ($q) use ($doador) {
+                $q->where('adotante_id', auth()->id())->where('doador_id', $doador->id);
             })
-            ->orWhere(function($q) use ($doador) {
-                $q->where('adotante_id', $doador->id)
-                  ->where('doador_id', auth()->id());
+            ->orWhere(function ($q) use ($doador, $animal) {
+                $q->where('animal_id', $animal->id)
+                    ->where('adotante_id', $doador->id)->where('doador_id', auth()->id());
             })
             ->first();
-        
-        if (!$conversa) {
+
+        // REGRA DE NEGÓCIO: Se não existir conversa e quem está tentando acessar for o adotante
+        if (!$conversa && auth()->id() !== $animal->user_id) {
+            return redirect()->back()->with('error', 'Aguarde o doador iniciar a conversa.');
+        }
+
+        // Se não existir e quem estiver acessando for o doador, aí sim cria a conversa
+        if (!$conversa && auth()->id() === $animal->user_id) {
             $conversa = Conversa::create([
                 'animal_id' => $animal->id,
-                'adotante_id' => auth()->id(),
-                'doador_id' => $doador->id,
+                'adotante_id' => $doador->id,
+                'doador_id' => auth()->id(),
             ]);
         }
-        
+
         // Marcar mensagens como lidas
         Mensagem::where('conversa_id', $conversa->id)
             ->where('remetente_id', '!=', auth()->id())
             ->update(['lida' => true]);
-        
+
         $mensagens = $conversa->mensagens()->with('remetente')->orderBy('created_at', 'asc')->get();
-        
+
         return view('conversas.show', compact('conversa', 'animal', 'doador', 'mensagens'));
     }
-    
+
     // Enviar mensagem
     public function send(Request $request, Conversa $conversa)
     {
         $request->validate([
             'mensagem' => 'required|string|max:1000',
         ]);
-        
+
         try {
             Mensagem::create([
                 'conversa_id' => $conversa->id,
@@ -93,17 +103,17 @@ class ConversaController extends Controller
                 'mensagem' => $request->mensagem,
                 'lida' => false,
             ]);
-            
+
             $conversa->touch(); // atualiza updated_at
-            
+
             return redirect()->back()->with('success', 'Mensagem enviada!');
-            
+
         } catch (Exception $e) {
             Log::error('Erro ao enviar mensagem: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Erro ao enviar mensagem.');
         }
     }
-    
+
     // Iniciar conversa a partir de uma solicitação de adoção
     public function iniciarPorAdocao(Adocao $adocao)
     {
@@ -112,7 +122,7 @@ class ConversaController extends Controller
             'adotante_id' => $adocao->adotante_id,
             'doador_id' => $adocao->doador_id,
         ]);
-        
+
         return redirect()->route('conversas.show', [
             'animal' => $adocao->animal_id,
             'doador' => $conversa->outroUsuario(auth()->id())->id

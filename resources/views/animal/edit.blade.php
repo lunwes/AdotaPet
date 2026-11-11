@@ -3,7 +3,7 @@
 @section('conteudo')
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Editar Animal</h2>
+            <h2>Editar Anúncio</h2>
             <a href="{{ url()->previous() }}" class="btn btn-secondary"> <i class="bi bi-arrow-left"></i> Voltar</a>
         </div>
 

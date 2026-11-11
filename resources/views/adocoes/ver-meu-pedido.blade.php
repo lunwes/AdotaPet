@@ -98,28 +98,28 @@
             
             <!-- Botões de ação (apenas para doador com pedido pendente) -->
             @if($isDoador && $adocao->status === 'pendente')
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex gap-3">
-                            <form action="{{ route('pedidos-adocao.aceitar', $adocao) }}" method="POST" class="flex-grow-1">
-                                @csrf
-                                <button type="submit" class="btn btn-success w-100" 
-                                        onclick="return confirm('Tem certeza que deseja ACEITAR a adoção de {{ $adocao->animal->nome }} para {{ $outroUser->name }}?')">
-                                    <i class="bi bi-check-lg"></i> Aceitar Adoção
-                                </button>
-                            </form>
-                            
-                            <form action="{{ route('pedidos-adocao.recusar', $adocao) }}" method="POST" class="flex-grow-1">
-                                @csrf
-                                <button type="submit" class="btn btn-danger w-100"
-                                        onclick="return confirm('Tem certeza que deseja RECUSAR a adoção de {{ $adocao->animal->nome }} para {{ $outroUser->name }}?')">
-                                    <i class="bi bi-x-lg"></i> Recusar
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @endif
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex gap-3">
+                <form action="{{ route('pedidos-adocao.aceitar', $adocao) }}" method="POST" class="col">
+                    @csrf
+                    <button type="submit" class="btn btn-success w-100"
+                            onclick="return confirm('Tem certeza que deseja ACEITAR a adoção de {{ $adocao->animal->nome }} para {{ $outroUser->name }}?')">
+                        <i class="bi bi-check-lg"></i> Aceitar Adoção
+                    </button>
+                </form>
+
+                <form action="{{ route('pedidos-adocao.recusar', $adocao) }}" method="POST" class="col">
+                    @csrf
+                    <button type="submit" class="btn btn-danger w-100"
+                            onclick="return confirm('Tem certeza que deseja RECUSAR a adoção de {{ $adocao->animal->nome }} para {{ $outroUser->name }}?')">
+                        <i class="bi bi-x-lg"></i> Recusar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+@endif
             
             <div class="mt-3">
                 <a href="{{ route('conversas.show', ['animal' => $adocao->animal->id, 'doador' => $outroUser->id]) }}" 
